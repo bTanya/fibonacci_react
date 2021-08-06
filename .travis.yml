@@ -1,25 +1,24 @@
-sodo: required 
-services: 
-    - docker
+sudo: required
+language: generic
 
+services:
+  - docker
 
 before_install:
-    - docker build -t btetiana/react-test -f .client/.Dockerfile.dev ./client
+  - docker build -t btetiana/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-    - docker run btetiana/react-test npm test -- --coverage
+  - docker run -e CI=true btetiana/react-test npm test
 
 after_success:
-    - docker build -t btetiana/multi-client ./client 
-    - docker build -t btetiana/multi-server ./server 
-    - docker build -t betiana/multi-worker ./worker
-
-#login in to the docker CLI
-
-    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
-
-# take images and push them to docker hub
-
-    - docker push btetiana/multi-client 
-    - docker push btetiana/multi-server
-    - docker push btetiana/betiana/multi-worker 
+  - docker build -t btetiana/multi-client ./client
+  - docker build -t btetiana/multi-nginx ./nginx
+  - docker build -t btetiana/multi-server ./server
+  - docker build -t btetiana/multi-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push btetiana/multi-client
+  - docker push btetiana/multi-nginx
+  - docker push btetiana/multi-server
+  - docker push btetiana/multi-worker
