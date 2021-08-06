@@ -13,3 +13,13 @@ after_success:
     - docker build -t btetiana/multi-client ./client 
     - docker build -t btetiana/multi-server ./server 
     - docker build -t betiana/multi-worker ./worker
+
+#login in to the docker CLI
+
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+# take images and push them to docker hub
+
+    - docker push btetiana/multi-client 
+    - docker push btetiana/multi-server
+    - docker push btetiana/betiana/multi-worker 
