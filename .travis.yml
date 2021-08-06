@@ -1,0 +1,15 @@
+sodo: required 
+services: 
+    - docker
+
+
+before_install:
+    - docker build -t btetiana/react-test -f .client/.Dockerfile.dev ./client
+
+script:
+    - docker run btetiana/react-test npm test -- --coverage
+
+after_success:
+    - docker build -t btetiana/multi-client ./client 
+    - docker build -t btetiana/multi-server ./server 
+    - docker build -t betiana/multi-worker ./worker
